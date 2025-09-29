@@ -30,6 +30,12 @@ class Genre(models.Model):
             ),
         ]
 
+class Language(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
 class Book(models.Model):
     """Model representing a book (but not a specific copy of a book)."""
     title = models.CharField(max_length=200)
@@ -49,19 +55,9 @@ class Book(models.Model):
     genre = models.ManyToManyField(
         Genre, help_text="Select a genre for this book")
     
-    LANGUAGE_CHOICES = [
-        ('en', 'English'),
-        ('fa', 'Farsi'),
-        ('de', 'German'),
-        ('es', 'Spanish'),
-        ('fr', 'French'),
-    ]
-    language = models.CharField(
-        max_length=2,
-        choices=LANGUAGE_CHOICES,
-        default='en',
-        help_text="Select the language of this book"
-    )
+    def display_genre(self):
+        """Create a string for the Genre. This is required to display genre in Admin."""
+        return ', '.join(genre.name for genre in self.genre.all()[:3])
 
     def __str__(self):
         """String for representing the Model object."""
